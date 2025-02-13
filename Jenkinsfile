@@ -1,7 +1,7 @@
 pipeline {
     agent {
 		node {
-			label :'docker-general-agent'
+			label 'docker-general-agent'
 		}
     }
     environment {
