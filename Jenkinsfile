@@ -1,5 +1,9 @@
 pipeline {
-    agent any
+    agent {
+		node {
+			label :'docker-general-agent'
+		}
+    }
     environment {
         DOCKER_IMAGE = "joanisky/app-express"
         DOCKER_TAG = "latest"
@@ -9,13 +13,6 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                sshagent(['github-ssh-key']) {
-                    git branch: 'main', url: 'git@github.com:JoAnisky/app-test-jenkins.git'
-                }
-            }
-        }
 
         stage('Build Image') {
             steps {
