@@ -1,18 +1,31 @@
-# Utilisation de l'image officielle Node.js
-FROM node:16
+# Étape 1 : Build (ne fait qu'installer les dépendances)
+FROM node:16 AS builder
 
-# Créer un répertoire pour l'application
+# Définir le répertoire de travail
 WORKDIR /app
 
-# Copier package.json et installer les dépendances
+# Copier uniquement les fichiers nécessaires pour l'installation des dépendances
 COPY package*.json ./
+
+# Installer toutes les dépendances (prod + dev pour le build)
 RUN npm install
 
-# Copier tous les fichiers dans le conteneur
+# Copier le reste du code source (mais on ne fait pas le build ici)
 COPY . .
 
+# Étape 2 : Production (image finale plus légère)
+FROM node:16-slim
+
+# Définir le répertoire de travail
+WORKDIR /app
+
+# Copier uniquement les fichiers nécessaires pour exécuter l'application
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/index.js ./
+
 # Exposer le port de l'application
-EXPOSE 3000
+EXPOSE 8080
 
 # Lancer l'application
 CMD ["node", "index.js"]
