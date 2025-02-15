@@ -1,7 +1,7 @@
 pipeline {
     agent {
         node {
-            label 'node-agent'  // Utilisation de ton node-agent Jenkins
+            label 'node-docker-agent'  // Utilisation du Node Docker Agent de mon repo Docker Hub
         }
     }
 
@@ -12,6 +12,13 @@ pipeline {
     }
 
     stages {
+		stage('Checkout') {
+			steps {
+				sshagent(['github-ssh-key']) {
+					git branch: 'main', url: 'git@github.com:JoAnisky/app-test-jenkins.git'
+				}
+			}
+		}
         stage('Install Dependencies') {
             steps {
                 sh 'npm install'
@@ -27,6 +34,12 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
+            }
+        }
+
+        stage('Login Docker Hub') {
+            steps {
+                sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin" // ou utiliser des credentials Jenkins
             }
         }
 
