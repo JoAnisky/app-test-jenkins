@@ -12,13 +12,6 @@ pipeline {
     }
 
     stages {
-		stage('Checkout') {
-			steps {
-				sshagent(['github-ssh-key']) {
-					git branch: 'main', url: 'git@github.com:JoAnisky/app-test-jenkins.git'
-				}
-			}
-		}
         stage('Install Dependencies') {
             steps {
                 sh 'npm install'
