@@ -40,6 +40,7 @@ pipeline {
                         docker pull ${DOCKER_IMAGE}:${DOCKER_TAG}
                         cd ${APP_DIR}
                         docker-compose down
+                        docker-compose build --no-cache
                         docker-compose up -d --force-recreate
                         docker system prune -f
                         ' > deploy.sh
