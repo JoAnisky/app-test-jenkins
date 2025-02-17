@@ -3,7 +3,7 @@ const app = express();
 const port = 8080;
 
 app.get('/', (req, res) => {
-    res.send('Test du Webhook Git!');
+    res.send('On aime avoir des app sécurisées');
 });
 
 app.listen(port, () => {
