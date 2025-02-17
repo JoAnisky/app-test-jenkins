@@ -34,7 +34,7 @@ pipeline {
                     ]) {
                         // Commandes SSH avec les variables d'environnement sécurisées
                         sh """
-                            ssh -o StrictHostKeyChecking=yes \$SSH_USER@\$SSH_URL
+                            ssh -o StrictHostKeyChecking=no \$SSH_USER@\$SSH_URL
                             scp -r * \$SSH_USER@\$SSH_URL:\$APP_DIR
 							ssh ${SSH_USER}@${SSH_URL} '/home/toor/scripts/deploy-docker.sh ${APP_DIR} ${DOCKER_IMAGE} ${DOCKER_TAG}'
                         """
