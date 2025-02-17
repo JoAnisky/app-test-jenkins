@@ -36,7 +36,7 @@ pipeline {
                         sh """
                             ssh -o StrictHostKeyChecking=no \$SSH_USER@\$SSH_URL
                             scp -r * \$SSH_USER@\$SSH_URL:\$APP_DIR
-                            ssh \$SSH_USER@\$SSH_URL '\$HOME_DIR/scripts/deploy-docker.sh \$APP_DIR \$DOCKER_IMAGE \$DOCKER_TAG'
+                    		ssh \$SSH_USER@\$SSH_URL '/home/toor/scripts/deploy-docker.sh \$APP_DIR \$DOCKER_IMAGE \$DOCKER_TAG'
                         """
                     }
                 }
