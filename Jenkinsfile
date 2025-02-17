@@ -10,16 +10,17 @@ pipeline {
         DOCKER_TAG = "latest"
     }
 	stages {
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    docker.withRegistry('', 'joanisky-dockerhub') {
-                        def image = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
-                        image.push()
-                    }
-                }
-            }
-        }
+      stage('Build Docker Image') {
+          steps {
+              script {
+                  docker.withRegistry('https://index.docker.io/v1/', 'joanisky-dockerhub') {
+                      def customImage = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
+                      customImage.push()
+                  }
+              }
+          }
+      }
+
 
         stage('Clean Up') {
             steps {
