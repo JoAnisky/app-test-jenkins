@@ -27,9 +27,9 @@ pipeline {
         stage('Deploy to Production') {
             steps {
                 withCredentials([
-                    string(credentialsId: 'ssh-user', variable: 'SSH_USER'),
-                    string(credentialsId: 'ssh-url', variable: 'SSH_URL'),
-                    string(credentialsId: 'home-dir', variable: 'HOME_DIR')
+                    string(credentialsId: 'SSH_USER', variable: 'SSH_USER'),
+                    string(credentialsId: 'SSH_UR', variable: 'SSH_URL'),
+                    string(credentialsId: 'HOME_DIR', variable: 'HOME_DIR')
                 ]) {
                     // Commandes SSH sécurisées avec les credentials
                     sh """
