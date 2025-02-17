@@ -29,8 +29,9 @@ pipeline {
             steps {
 			   sshagent(['ssh-toor']) {
 				  sh """
-					   scp -r * toor@147.93.89.90:${APP_DIR}
-					   ssh toor@147.93.89.90 '/home/toor/deploy-docker.sh ${APP_DIR} ${DOCKER_IMAGE} ${DOCKER_TAG}'
+						ssh -o StrictHostKeyChecking=no toor@147.93.89.90
+					   	scp -r * toor@147.93.89.90:${APP_DIR}
+					   	ssh toor@147.93.89.90 '/home/toor/deploy-docker.sh ${APP_DIR} ${DOCKER_IMAGE} ${DOCKER_TAG}'
 				   """
 			   }
             }
