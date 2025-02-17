@@ -28,7 +28,7 @@ pipeline {
             steps {
                 withCredentials([
                     string(credentialsId: 'SSH_USER', variable: 'SSH_USER'),
-                    string(credentialsId: 'SSH_UR', variable: 'SSH_URL'),
+                    string(credentialsId: 'SSH_URL', variable: 'SSH_URL'),
                     string(credentialsId: 'HOME_DIR', variable: 'HOME_DIR')
                 ]) {
                     // Commandes SSH sécurisées avec les credentials
