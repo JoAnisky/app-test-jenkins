@@ -6,9 +6,12 @@ pipeline {
     }
 
     environment {
-        DOCKER_IMAGE = "joanisky/app-express"
+        DOCKER_IMAGE = "joanisky/app-express" // nom de l'image a pousser sur DockerHub
         DOCKER_TAG = "latest"
-        APP_DIR = "/home/toor/app"  // Dossier où l'app sera stockée
+		APP_DIR = "${HOME_DIR}/app"  // Dossier où l'app sera stockée
+		SSH_USER = credentials('ssh-user')  // Récupère l'utilisateur SSH stocké dans Jenkins
+		SSH_URL = credentials('ssh-url')  // Récupère l'URL SSH
+		HOME_DIR = credentials('home-dir')  // Récupère le chemin HOME
     }
 
 	stages {
@@ -29,9 +32,9 @@ pipeline {
             steps {
 			   sshagent(['ssh-toor']) {
 				  sh """
-						ssh -o StrictHostKeyChecking=no toor@147.93.89.90
-					   	scp -r * toor@147.93.89.90:${APP_DIR}
-					   	ssh toor@147.93.89.90 '/home/toor/scripts/deploy-docker.sh ${APP_DIR} ${DOCKER_IMAGE} ${DOCKER_TAG}'
+						ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_URL}
+					   	scp -r * ${SSH_USER}@${SSH_URL}:${APP_DIR}
+					   	ssh ${SSH_USER}@${SSH_URL} '${HOME_DIR}/scripts/deploy-docker.sh ${APP_DIR} ${DOCKER_IMAGE} ${DOCKER_TAG}'
 				   """
 			   }
             }
