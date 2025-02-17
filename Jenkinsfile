@@ -24,21 +24,22 @@ pipeline {
             }
         }
 
-        stage('Deploy to Production') {
-            steps {
-                withCredentials([
-                    string(credentialsId: 'SSH_USER', variable: 'SSH_USER'),
-                    string(credentialsId: 'SSH_URL', variable: 'SSH_URL'),
-                    string(credentialsId: 'HOME_DIR', variable: 'HOME_DIR')
-                ]) {
-                    // Commandes SSH sécurisées avec les credentials
-                    sh """
-                        ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_URL}
-                        scp -r * ${SSH_USER}@${SSH_URL}:${APP_DIR}
-                        ssh ${SSH_USER}@${SSH_URL} '${HOME_DIR}/scripts/deploy-docker.sh ${APP_DIR} ${DOCKER_IMAGE} ${DOCKER_TAG}'
-                    """
-                }
-            }
-        }
+		stage('Deploy to Production') {
+			steps {
+				withCredentials([
+					string(credentialsId: 'SSH_USER', variable: 'SSH_USER'),
+					string(credentialsId: 'SSH_URL', variable: 'SSH_URL'),
+					string(credentialsId: 'HOME_DIR', variable: 'HOME_DIR')
+				]) {
+					// SSH command with secured credentials
+					sh """
+						ssh -o StrictHostKeyChecking=no \$SSH_USER@\${SSH_URL}
+						scp -r * \$SSH_USER@\${SSH_URL}:\${APP_DIR}
+						ssh \$SSH_USER@\${SSH_URL} '\${HOME_DIR}/scripts/deploy-docker.sh \${APP_DIR} \${DOCKER_IMAGE} \${DOCKER_TAG}'
+					"""
+				}
+			}
+		}
+
     }
 }
