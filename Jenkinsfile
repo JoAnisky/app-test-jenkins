@@ -10,7 +10,9 @@ pipeline {
         DOCKER_TAG = "latest"
     }
 	stages {
+		agent any
       stage('Build Docker Image') {
+
           steps {
               script {
                   docker.withRegistry('https://index.docker.io/v1/', 'joanisky-dockerhub') {
