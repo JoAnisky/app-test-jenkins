@@ -24,29 +24,20 @@ pipeline {
 			}
 		}
 
-		stage('Clean Up') {
-			agent any
-			steps {
-				script {
-					sh 'docker ps -a -q | xargs -r docker rm -f'  // Supprimer tous les conteneurs arrêtés
-					sh 'docker images -q | xargs -r docker rmi -f' // Supprimer toutes les images inutilisées
-				}
-			}
-		}
+        stage('Deploy to Production') {
+            steps {
+                sshagent(['ssh-server-ci']) {
+                    sh """
+                        ssh -o StrictHostKeyChecking=no toor@147.93.89.90 <<EOF
+                            docker pull ${DOCKER_IMAGE}:${DOCKER_TAG}
+                            docker-compose down
+                            docker-compose up -d --force-recreate
+                            docker system prune -f
+                        EOF
+                    """
+                }
+            }
+        }
 
-//         stage('Deploy to Production') {
-//             steps {
-//                 sshagent(['ssh-server-ci']) {
-//                     sh """
-//                         ssh -o StrictHostKeyChecking=no toor@147.93.89.90 <<EOF
-//                             docker pull ${DOCKER_IMAGE}:${DOCKER_TAG}
-//                             docker-compose down
-//                             docker-compose up -d --force-recreate
-//                             docker system prune -f
-//                         EOF
-//                     """
-//                 }
-//             }
-//         }
     }
 }
