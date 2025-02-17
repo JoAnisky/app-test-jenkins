@@ -8,38 +8,23 @@ pipeline {
     environment {
         DOCKER_IMAGE = "joanisky/app-express"
         DOCKER_TAG = "latest"
-        DOCKERHUB_CREDENTIALS = credentials('joanisky-dockerhub')
     }
-
-    stages {
-        stage('Install Dependencies') {
-            steps {
-                sh 'npm install'
-            }
-        }
-
-//         stage('Build Application') {
-//             steps {
-//                 sh 'npm run build'
-//             }
-//         }
-
+	stages {
         stage('Build Docker Image') {
             steps {
-                sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
+                script {
+                    docker.withRegistry('', 'joanisky-dockerhub') {
+                        def image = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
+                        image.push()
+                    }
+                }
             }
         }
 
-        stage('Login Docker Hub') {
+        stage('Clean Up') {
             steps {
-                sh "echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin" // ou utiliser des credentials Jenkins
-            }
-        }
-
-        stage('Push to Docker Hub') {
-            steps {
-                withDockerRegistry([credentialsId: 'joanisky-dockerhub', url: '']) {
-                    sh "docker push ${DOCKER_IMAGE}:${DOCKER_TAG}"
+                script {
+                    docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").remove()
                 }
             }
         }
