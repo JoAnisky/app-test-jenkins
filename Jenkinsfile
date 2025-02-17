@@ -9,22 +9,23 @@ pipeline {
         DOCKER_IMAGE = "joanisky/app-express"
         DOCKER_TAG = "latest"
     }
+
 	stages {
-		agent any
-      stage('Build Docker Image') {
 
-          steps {
-              script {
-                  docker.withRegistry('https://index.docker.io/v1/', 'joanisky-dockerhub') {
-                      def customImage = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
-                      customImage.push()
-                  }
-              }
-          }
-      }
-
+      	stage('Build Docker Image') {
+			agent any
+			steps {
+			  script {
+				  docker.withRegistry('https://index.docker.io/v1/', 'joanisky-dockerhub') {
+					  def customImage = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
+					  customImage.push()
+				  }
+			  }
+			}
+		}
 
         stage('Clean Up') {
+        	agent any
             steps {
                 script {
                     docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").remove()
