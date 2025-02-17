@@ -24,14 +24,15 @@ pipeline {
 			}
 		}
 
-        stage('Clean Up') {
-        	agent any
-            steps {
-                script {
-                    docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}").remove()
-                }
-            }
-        }
+		stage('Clean Up') {
+			agent any
+			steps {
+				script {
+					sh 'docker ps -a -q | xargs -r docker rm -f'  // Supprimer tous les conteneurs arrêtés
+					sh 'docker images -q | xargs -r docker rmi -f' // Supprimer toutes les images inutilisées
+				}
+			}
+		}
 
 //         stage('Deploy to Production') {
 //             steps {
