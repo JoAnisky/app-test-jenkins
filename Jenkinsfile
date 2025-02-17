@@ -30,13 +30,14 @@ pipeline {
 
         stage('Deploy to Production') {
             steps {
-			   sshagent(['ssh-toor']) {
-				  sh """
-						ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_URL}
-					   	scp -r * ${SSH_USER}@${SSH_URL}:${APP_DIR}
-					   	ssh ${SSH_USER}@${SSH_URL} '${HOME_DIR}/scripts/deploy-docker.sh ${APP_DIR} ${DOCKER_IMAGE} ${DOCKER_TAG}'
-				   """
-			   }
+                withCredentials([usernamePassword(credentialsId: 'ssh-user', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_PASSWORD')]) {
+                    // SSH command with secured credentials
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_URL}
+                        scp -r * ${SSH_USER}@${SSH_URL}:${APP_DIR}
+                        ssh ${SSH_USER}@${SSH_URL} '${HOME_DIR}/scripts/deploy-docker.sh ${APP_DIR} ${DOCKER_IMAGE} ${DOCKER_TAG}'
+                    """
+                }
             }
         }
 
