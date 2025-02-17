@@ -27,31 +27,12 @@ pipeline {
 
         stage('Deploy to Production') {
             steps {
-                sshagent(['ssh-toor']) {
-                   sh """
-
-                        ssh -o StrictHostKeyChecking=no toor@147.93.89.90
-
-                        ssh toor@147.93.89.90 'mkdir -p ${APP_DIR}'
-
-                        scp -r * toor@147.93.89.90:${APP_DIR}
-
-                        echo '
-                        docker pull ${DOCKER_IMAGE}:${DOCKER_TAG}
-                        cd ${APP_DIR}
-                        docker-compose down
-                        docker-compose build --no-cache
-                        docker-compose up -d --force-recreate
-                        docker system prune -f
-                        ' > deploy.sh
-
-                        scp deploy.sh toor@147.93.89.90:/home/toor/
-
-                        ssh toor@147.93.89.90 'bash /home/toor/deploy.sh'
-
-                        ssh toor@147.93.89.90 'rm /home/toor/deploy.sh'
-                    """
-                }
+			   sshagent(['ssh-toor']) {
+				  sh """
+					   scp -r * toor@147.93.89.90:${APP_DIR}
+					   ssh toor@147.93.89.90 '/home/toor/deploy-docker.sh ${APP_DIR} ${DOCKER_IMAGE} ${DOCKER_TAG}'
+				   """
+			   }
             }
         }
 
