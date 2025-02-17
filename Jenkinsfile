@@ -1,7 +1,7 @@
 pipeline {
     agent {
         node {
-            label 'node-docker-agent'  // Utilisation du Node Docker Agent de mon repo Docker Hub
+            label 'node-agent'  // Utilisation du Node Docker Agent de mon repo Docker Hub
         }
     }
 
