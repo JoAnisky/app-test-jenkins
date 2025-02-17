@@ -23,6 +23,7 @@ WORKDIR /app
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/index.js ./
+COPY --from=builder /app/docker-compose.yml ./
 
 # Exposer le port de l'application
 EXPOSE 8080
